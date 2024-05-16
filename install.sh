@@ -16,7 +16,7 @@ export FLYCTL_INSTALL="~/.fly"
 export PATH="$FLYCTL_INSTALL/bin:$PATH"
 
 # Write "Oh My Bash" Config
-cat << EOF >> ~/.bashrct
+cat << EOF >> ~/.bashrc
 # Enable the subsequent settings only in interactive sessions
 case \$- in
   *i*) ;;
