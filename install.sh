@@ -1,9 +1,6 @@
 # Installing NeoVIM
 sudo apt-get install neovim -y
 
-# Installing "Oh My Bash"
-bash -c "$(curl -fsSL https://raw.githubusercontent.com/ohmybash/oh-my-bash/master/tools/install.sh)"
-
 # Install GH
 sudo apt-get install gh
 if [ -n "${DOT_GH_TOKEN}" ]; then
@@ -14,6 +11,34 @@ fi
 curl -L https://fly.io/install.sh | sh
 export FLYCTL_INSTALL="~/.fly"
 export PATH="$FLYCTL_INSTALL/bin:$PATH"
+
+# Install Apicurio
+if [ -n "${GITPOD_WORKSPACE_URL}" ]; then
+    docker pull quay.io/apicurio/apicurio-studio:1.0.0.Beta1
+    docker pull quay.io/apicurio/apicurio-studio-ui:1.0.0.Beta1
+
+    cat << EOF >> ~/.apicurio-ui-config.js
+    const ApicurioStudioConfig = {
+        "apis": {
+            "studio": "https://1112-${GITPOD_WORKSPACE_ID}.${GITPOD_WORKSPACE_CLUSTER_HOST}/apis/studio/v1"
+        },
+        "ui": {},
+        "components": {
+            "masthead": {},
+            "editors": {},
+            "nav": {}
+        },
+        "auth": {}
+    };
+    EOF
+    
+    docker run -it -d -p 1112:8080 quay.io/apicurio/apicurio-studio:1.0.0.Beta1
+    docker run -it -d -p 1111:8080 -v ~/.apicurio-ui-config.js:/opt/apt-root/src/config.js quay.io/apicurio/apicurio-studio-ui:1.0.0.Beta1
+fi
+
+
+# Installing "Oh My Bash"
+bash -c "$(curl -fsSL https://raw.githubusercontent.com/ohmybash/oh-my-bash/master/tools/install.sh)"
 
 # Write "Oh My Bash" Config
 cat << EOF >> ~/.bashrc
